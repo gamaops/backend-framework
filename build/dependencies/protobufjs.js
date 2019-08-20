@@ -13,3 +13,9 @@ exports.loadProtosDefinitions = (definitions, protos) => {
     protos.loadSync(definitions.map((file) => path_1.default.join(constants_1.DEFINITIONS_DIRECTORY, file)), constants_1.PROTOBUFJS_OPTIONS);
     return protos;
 };
+exports.parseProtobufToObject = (buffer, type) => {
+    return type.toObject(type.decode(buffer), constants_1.PROTOBUFJS_OPTIONS);
+};
+exports.parseObjectToProtobuf = (object, type) => {
+    return Buffer.from(type.encode(object).finish());
+};
