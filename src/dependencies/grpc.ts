@@ -21,10 +21,14 @@ export const getGrpcProtoDescriptor = <T>(files: Array<string>): T => {
 	return grpc.loadPackageDefinition(packageDefinition) as unknown as T;
 };
 
-export class DataValidationError extends Error {
+export class DataValidationError<T = string> extends Error {
 
-	constructor(message: string) {
+	public errno: T | 'INTERNAL_ERROR' = 'INTERNAL_ERROR';
+
+	constructor(message: string, errno?: T) {
 		super(message);
+		if (errno)
+			this.errno = errno;
 	}
 
 }
@@ -32,9 +36,12 @@ export class DataValidationError extends Error {
 export const handleSchemaValidationError = (logger: Logger, schemaValidator: Ajv.Ajv, error: any): ServiceError | null => {
 	if (Array.isArray(error)) {
 		logger.debug(error, 'Validation errors');
+		const metadata = new grpc.Metadata();
+		metadata.set('errno', 'INVALID_SCHEMA');
 		const statusError: ServiceError = {
 			name: 'schema validation error',
 			message: schemaValidator.errorsText(error),
+			metadata,
 			code: grpc.status.INVALID_ARGUMENT,
 		};
 		return statusError;
@@ -45,9 +52,12 @@ export const handleSchemaValidationError = (logger: Logger, schemaValidator: Ajv
 export const handleDataValidationError = (logger: Logger, error: any): ServiceError | null => {
 	if (error instanceof DataValidationError) {
 		logger.debug(error, 'Validation errors');
+		const metadata = new grpc.Metadata();
+		metadata.set('errno', error.errno);
 		const statusError: ServiceError = {
 			name: 'schema validation error',
 			message: error.message,
+			metadata,
 			code: grpc.status.INVALID_ARGUMENT,
 		};
 		return statusError;
@@ -57,10 +67,17 @@ export const handleDataValidationError = (logger: Logger, error: any): ServiceEr
 
 export const handleInternalError = (logger: Logger, error: any): ServiceError => {
 	error.id = uuidv4();
+	let errno: any = 'INTERNAL_ERROR';
+	if (Reflect.has(error, 'errno'))
+		errno = error.errno;
 	logger.error(error, 'Internal error');
+	const metadata = new grpc.Metadata();
+	metadata.set('errno', errno);
+	metadata.set('errid', error.id);
 	const statusError: ServiceError = {
 		name: 'internal error',
 		message: error.id,
+		metadata,
 		code: grpc.status.INTERNAL,
 	};
 	return statusError;

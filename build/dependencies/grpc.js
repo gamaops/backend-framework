@@ -20,17 +20,23 @@ exports.getGrpcProtoDescriptor = (files) => {
     return grpc_1.default.loadPackageDefinition(packageDefinition);
 };
 class DataValidationError extends Error {
-    constructor(message) {
+    constructor(message, errno) {
         super(message);
+        this.errno = 'INTERNAL_ERROR';
+        if (errno)
+            this.errno = errno;
     }
 }
 exports.DataValidationError = DataValidationError;
 exports.handleSchemaValidationError = (logger, schemaValidator, error) => {
     if (Array.isArray(error)) {
         logger.debug(error, 'Validation errors');
+        const metadata = new grpc_1.default.Metadata();
+        metadata.set('errno', 'INVALID_SCHEMA');
         const statusError = {
             name: 'schema validation error',
             message: schemaValidator.errorsText(error),
+            metadata,
             code: grpc_1.default.status.INVALID_ARGUMENT,
         };
         return statusError;
@@ -40,9 +46,12 @@ exports.handleSchemaValidationError = (logger, schemaValidator, error) => {
 exports.handleDataValidationError = (logger, error) => {
     if (error instanceof DataValidationError) {
         logger.debug(error, 'Validation errors');
+        const metadata = new grpc_1.default.Metadata();
+        metadata.set('errno', error.errno);
         const statusError = {
             name: 'schema validation error',
             message: error.message,
+            metadata,
             code: grpc_1.default.status.INVALID_ARGUMENT,
         };
         return statusError;
@@ -51,10 +60,17 @@ exports.handleDataValidationError = (logger, error) => {
 };
 exports.handleInternalError = (logger, error) => {
     error.id = v4_1.default();
+    let errno = 'INTERNAL_ERROR';
+    if (Reflect.has(error, 'errno'))
+        errno = error.errno;
     logger.error(error, 'Internal error');
+    const metadata = new grpc_1.default.Metadata();
+    metadata.set('errno', errno);
+    metadata.set('errid', error.id);
     const statusError = {
         name: 'internal error',
         message: error.id,
+        metadata,
         code: grpc_1.default.status.INTERNAL,
     };
     return statusError;
