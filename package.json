@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/gamaops/backend-framework#readme",
   "devDependencies": {
-    "@types/bull": "^3.10.1",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.7",
     "@types/mock-require": "^2.0.0",

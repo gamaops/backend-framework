@@ -1,12 +1,17 @@
-export interface IBackendRuntime<Parameters> {
+export interface IBackendRuntime<Parameters, Functions> {
 	parameters: Parameters;
 	functions: {
 		[key: string]: Function,
 	};
-	contextify(fnc: Function, staticContext?: any): IBackendRuntime<Parameters>;
+	contextify(fnc: Function, staticContext?: any): IBackendRuntime<Parameters, Functions>;
+	fncs(): Functions;
+	params(): Parameters;
 }
 
-export const createBackendRuntime = <T = any>(parameters: T): IBackendRuntime<T> => {
+export const createBackendRuntime = <
+	Parameters = any,
+	Functions = any
+>(parameters: Parameters): IBackendRuntime<Parameters, Functions> => {
 
 	const runtime: {
 		[key: string]: any,
@@ -21,6 +26,14 @@ export const createBackendRuntime = <T = any>(parameters: T): IBackendRuntime<T>
 		return runtime;
 	};
 
-	return runtime as IBackendRuntime<T>;
+	runtime.fncs = (): Functions => {
+		return runtime.functions as Functions;
+	};
+
+	runtime.params = (): Parameters => {
+		return runtime.parameters as Parameters;
+	};
+
+	return runtime as IBackendRuntime<Parameters, Functions>;
 
 };
