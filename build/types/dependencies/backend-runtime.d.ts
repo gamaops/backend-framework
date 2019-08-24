@@ -1,8 +1,6 @@
 export interface IBackendRuntime<Parameters, Functions> {
     parameters: Parameters;
-    functions: {
-        [key: string]: Function;
-    };
+    functions: Functions;
     contextify(fnc: Function, staticContext?: any): IBackendRuntime<Parameters, Functions>;
     fncs(): Functions;
     params(): Parameters;

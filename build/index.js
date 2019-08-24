@@ -12,6 +12,7 @@ __export(require("./dependencies/backend-runtime"));
 __export(require("./dependencies/elasticsearch"));
 __export(require("./dependencies/json-schema"));
 __export(require("./dependencies/grpc"));
+__export(require("./dependencies/credentials"));
 __export(require("./helpers/object-manipulation"));
 __export(require("./helpers/job-handling"));
 __export(require("./helpers/data"));
