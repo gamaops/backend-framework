@@ -1,3 +1,12 @@
+## 2019-08-24T09:20:58.365Z
+### 🆕 - add code or file(s) (project)
+
+#### none
+
+- Add credentials functions
+
+-----------------------------
+
 ## 2019-08-23T12:07:53.488Z
 ### 🎨 - improving the format/structure of the code (project)
 
