@@ -4,6 +4,18 @@ import {
 	DEFINITIONS_DIRECTORY,
 	PROTOBUFJS_OPTIONS,
 } from '../constants';
+import protobufPath from '@protobufjs/path';
+import fs from 'fs';
+
+Root.prototype.resolvePath = (origin: string, target: string) => {
+	const definitionsPath = path.join(
+		DEFINITIONS_DIRECTORY!,
+		target
+	);
+	if (fs.existsSync(definitionsPath))
+		return definitionsPath;
+	return protobufPath.resolve(origin, target);
+}
 
 export const loadProtosDefinitions = (
 	definitions: Array<string>,
