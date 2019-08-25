@@ -1,3 +1,12 @@
+## 2019-08-25T10:35:54.461Z
+### 🆕 - add code or file(s) (project)
+
+#### none
+
+- Add custom logic to resolve proto files
+
+-----------------------------
+
 ## 2019-08-24T09:20:58.365Z
 ### 🆕 - add code or file(s) (project)
 
