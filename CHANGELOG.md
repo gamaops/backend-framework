@@ -1,3 +1,12 @@
+## 2019-08-27T21:30:20.925Z
+### 🐛 - fixing a bug (project)
+
+#### none
+
+- Fix logger for contextify function
+
+-----------------------------
+
 ## 2019-08-27T21:26:36.412Z
 ### 🆕 - add code or file(s) (project)
 
