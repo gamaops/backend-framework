@@ -1,3 +1,12 @@
+## 2019-08-27T20:41:46.813Z
+### 🆕 - add code or file(s) (project)
+
+#### none
+
+- Add code to wrap job exceptions
+
+-----------------------------
+
 ## 2019-08-25T10:35:54.461Z
 ### 🆕 - add code or file(s) (project)
 
