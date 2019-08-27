@@ -1,3 +1,5 @@
+import * as loggerMod from '../logger';
+
 export interface IBackendRuntime<Parameters, Functions> {
 	parameters: Parameters;
 	functions: Functions;
@@ -18,9 +20,33 @@ export const createBackendRuntime = <
 		functions: {},
 	};
 
-	runtime.contextify = (fnc: Function, staticContext?: any) => {
+	runtime.contextify = (fnc: Function, staticContext?: any, options: {
+		logErrors?: 'sync' | 'async'
+	} = {}) => {
 		staticContext = staticContext || {};
-		runtime.functions[fnc.name] = fnc.bind({...runtime, ...staticContext});
+		let boundFnc = fnc.bind({...runtime, ...staticContext});
+		const logger = staticContext.logger || loggerMod;
+		if (options.logErrors === 'sync') {
+			const rawFnc = boundFnc;
+			boundFnc = (...args: Array<any>): any => {
+				try {
+					return rawFnc(...args);
+				} catch (error) {
+					logger.error({error, functionName: fnc.name}, 'Error on synchronous function');
+					throw error;
+				}
+			}
+		}
+		else if (options.logErrors === 'async') {
+			const rawFnc = boundFnc;
+			boundFnc = async (...args: Array<any>): Promise<any> => {
+				return rawFnc(...args).catch((error: any) => {
+					logger.error({error, functionName: fnc.name}, 'Error on asynchronous function');
+					return Promise.reject(error);
+				});
+			}
+		}
+		runtime.functions[fnc.name] = boundFnc;
 		return runtime;
 	};
 
