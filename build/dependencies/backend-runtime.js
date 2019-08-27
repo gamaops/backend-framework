@@ -8,6 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const loggerMod = __importStar(require("../logger"));
+;
 exports.createBackendRuntime = (parameters) => {
     const runtime = {
         parameters,
@@ -16,7 +17,7 @@ exports.createBackendRuntime = (parameters) => {
     runtime.contextify = (fnc, staticContext, options = {}) => {
         staticContext = staticContext || {};
         let boundFnc = fnc.bind({ ...runtime, ...staticContext });
-        const logger = staticContext.logger || loggerMod;
+        const logger = staticContext.logger || loggerMod.logger;
         if (options.logErrors === 'sync') {
             const rawFnc = boundFnc;
             boundFnc = (...args) => {

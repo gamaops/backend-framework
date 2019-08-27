@@ -1,7 +1,10 @@
+export interface IContextifyOptions {
+    logErrors?: 'sync' | 'async';
+}
 export interface IBackendRuntime<Parameters, Functions> {
     parameters: Parameters;
     functions: Functions;
-    contextify(fnc: Function, staticContext?: any): IBackendRuntime<Parameters, Functions>;
+    contextify(fnc: Function, staticContext?: any, options?: IContextifyOptions): IBackendRuntime<Parameters, Functions>;
     fncs(): Functions;
     params(): Parameters;
 }

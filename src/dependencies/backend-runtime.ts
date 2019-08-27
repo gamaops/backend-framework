@@ -1,9 +1,13 @@
 import * as loggerMod from '../logger';
 
+export interface IContextifyOptions {
+	logErrors?: 'sync' | 'async'
+};
+
 export interface IBackendRuntime<Parameters, Functions> {
 	parameters: Parameters;
 	functions: Functions;
-	contextify(fnc: Function, staticContext?: any): IBackendRuntime<Parameters, Functions>;
+	contextify(fnc: Function, staticContext?: any, options?: IContextifyOptions): IBackendRuntime<Parameters, Functions>;
 	fncs(): Functions;
 	params(): Parameters;
 }
@@ -20,12 +24,10 @@ export const createBackendRuntime = <
 		functions: {},
 	};
 
-	runtime.contextify = (fnc: Function, staticContext?: any, options: {
-		logErrors?: 'sync' | 'async'
-	} = {}) => {
+	runtime.contextify = (fnc: Function, staticContext?: any, options: IContextifyOptions = {}) => {
 		staticContext = staticContext || {};
 		let boundFnc = fnc.bind({...runtime, ...staticContext});
-		const logger = staticContext.logger || loggerMod;
+		const logger = staticContext.logger || loggerMod.logger;
 		if (options.logErrors === 'sync') {
 			const rawFnc = boundFnc;
 			boundFnc = (...args: Array<any>): any => {
