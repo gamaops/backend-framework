@@ -1,3 +1,12 @@
+## 2019-08-27T21:26:36.412Z
+### 🆕 - add code or file(s) (project)
+
+#### none
+
+- Add elasticsearch logging and context functions error wrapping
+
+-----------------------------
+
 ## 2019-08-27T20:41:46.813Z
 ### 🆕 - add code or file(s) (project)
 
