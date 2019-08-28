@@ -8,7 +8,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const loggerMod = __importStar(require("../logger"));
+const prom_client_1 = require("prom-client");
 ;
+var functionsExecutionTime = null;
+exports.enableBackendRuntimeMetrics = () => {
+    functionsExecutionTime = new prom_client_1.Histogram({
+        name: 'functions_execution_time_seconds',
+        help: 'Context bound functions execution time',
+        labelNames: ['function', 'completionStatus']
+    });
+};
 exports.createBackendRuntime = (parameters) => {
     const runtime = {
         parameters,
@@ -21,10 +30,18 @@ exports.createBackendRuntime = (parameters) => {
         if (options.logErrors === 'sync') {
             const rawFnc = boundFnc;
             boundFnc = (...args) => {
+                let end = null;
+                if (functionsExecutionTime)
+                    end = functionsExecutionTime.startTimer({ function: fnc.name });
                 try {
-                    return rawFnc(...args);
+                    const results = rawFnc(...args);
+                    if (end)
+                        end({ completionStatus: 'resolved' });
+                    return results;
                 }
                 catch (error) {
+                    if (end)
+                        end({ completionStatus: 'rejected' });
                     logger.error({ error, functionName: fnc.name }, 'Error on synchronous function');
                     throw error;
                 }
@@ -33,7 +50,16 @@ exports.createBackendRuntime = (parameters) => {
         else if (options.logErrors === 'async') {
             const rawFnc = boundFnc;
             boundFnc = async (...args) => {
-                return rawFnc(...args).catch((error) => {
+                let end = null;
+                if (functionsExecutionTime)
+                    end = functionsExecutionTime.startTimer({ function: fnc.name });
+                return rawFnc(...args).then((results) => {
+                    if (end)
+                        end({ completionStatus: 'resolved' });
+                    return results;
+                }).catch((error) => {
+                    if (end)
+                        end({ completionStatus: 'rejected' });
                     logger.error({ error, functionName: fnc.name }, 'Error on asynchronous function');
                     return Promise.reject(error);
                 });

@@ -1,4 +1,7 @@
 import * as loggerMod from '../logger';
+import {
+	Histogram
+} from 'prom-client';
 
 export interface IContextifyOptions {
 	logErrors?: 'sync' | 'async'
@@ -10,6 +13,16 @@ export interface IBackendRuntime<Parameters, Functions> {
 	contextify(fnc: Function, staticContext?: any, options?: IContextifyOptions): IBackendRuntime<Parameters, Functions>;
 	fncs(): Functions;
 	params(): Parameters;
+}
+
+var functionsExecutionTime: null | Histogram = null;
+
+export const enableBackendRuntimeMetrics = () => {
+	functionsExecutionTime = new Histogram({
+		name: 'functions_execution_time_seconds',
+		help: 'Context bound functions execution time',
+		labelNames: ['function', 'completionStatus']
+	});
 }
 
 export const createBackendRuntime = <
@@ -31,9 +44,17 @@ export const createBackendRuntime = <
 		if (options.logErrors === 'sync') {
 			const rawFnc = boundFnc;
 			boundFnc = (...args: Array<any>): any => {
+				let end = null;
+				if (functionsExecutionTime)
+					end = functionsExecutionTime.startTimer({ function: fnc.name });
 				try {
-					return rawFnc(...args);
+					const results = rawFnc(...args);
+					if (end)
+						end({ completionStatus: 'resolved' });
+					return results;
 				} catch (error) {
+					if (end)
+						end({ completionStatus: 'rejected' });
 					logger.error({error, functionName: fnc.name}, 'Error on synchronous function');
 					throw error;
 				}
@@ -42,7 +63,16 @@ export const createBackendRuntime = <
 		else if (options.logErrors === 'async') {
 			const rawFnc = boundFnc;
 			boundFnc = async (...args: Array<any>): Promise<any> => {
-				return rawFnc(...args).catch((error: any) => {
+				let end: any = null;
+				if (functionsExecutionTime)
+					end = functionsExecutionTime.startTimer({ function: fnc.name });
+				return rawFnc(...args).then((results: any) => {
+					if (end)
+						end({ completionStatus: 'resolved' });
+					return results;
+				}).catch((error: any) => {
+					if (end)
+						end({ completionStatus: 'rejected' });
 					logger.error({error, functionName: fnc.name}, 'Error on asynchronous function');
 					return Promise.reject(error);
 				});
