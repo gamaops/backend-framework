@@ -38,7 +38,7 @@ exports.createMetricsServer = (options) => {
         logger.error(error, 'Metrics server error');
         process.exit(1);
     });
-    server.listen(options.host, options.port, () => {
+    server.listen(options.port, options.host, () => {
         logger.info('Metrics server is listening');
     });
     server.on('request', (request, response) => {

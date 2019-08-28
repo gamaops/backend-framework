@@ -44,7 +44,7 @@ export const createMetricsServer = (options: IMetricsServerOptions): IMetricsSer
 		process.exit(1);
 	});
 	
-	server.listen(options.host, options.port, () => {
+	server.listen(options.port, options.host, () => {
 		logger.info('Metrics server is listening');
 	});
 
