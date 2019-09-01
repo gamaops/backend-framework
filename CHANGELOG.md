@@ -1,3 +1,13 @@
+## 2019-09-01T10:10:21.455Z
+### 🔥 - removing code or file(s) (project)
+
+#### none
+
+- Add log serializers and standard
+- Remove HFXEventStash
+
+-----------------------------
+
 ## 2019-08-28T01:50:17.853Z
 ### 🐛 - fixing a bug (project)
 
