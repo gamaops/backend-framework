@@ -20,4 +20,9 @@ switch (process.env.LOG_LEVEL) {
 export const logger = Logger.createLogger({
 	name: process.env.APP_NAME!,
 	level: LOG_LEVEL,
+	serializers: {
+		error: Logger.stdSerializers.err,
+		request: Logger.stdSerializers.request,
+		response: Logger.stdSerializers.response,
+	}
 });

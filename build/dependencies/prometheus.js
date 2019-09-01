@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const prom_client_1 = require("prom-client");
 const http_1 = __importDefault(require("http"));
 const loggerMod = __importStar(require("../logger"));
+const v4_1 = __importDefault(require("uuid/v4"));
 const url_1 = __importDefault(require("url"));
 const logger = loggerMod.logger.child({ server: 'metrics' });
 exports.configureDefaultMetrics = (defaultLabels, options = {}) => {
@@ -35,7 +36,9 @@ exports.createMetricsServer = (options) => {
     });
     server.health.set(0);
     server.on('error', (error) => {
-        logger.error(error, 'Metrics server error');
+        if (!error.errid)
+            error.errid = v4_1.default();
+        logger.error({ error }, 'Metrics server error');
         process.exit(1);
     });
     server.listen(options.port, options.host, () => {
@@ -65,7 +68,7 @@ exports.createMetricsServer = (options) => {
                 return;
             }
         }
-        logger.warn(request, 'Metrics server invalid request');
+        logger.warn({ request }, 'Metrics server invalid request');
         response.statusCode = 404;
         response.setHeader('Content-Type', 'text/plain');
         response.end('not found');

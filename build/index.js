@@ -5,7 +5,6 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./dependencies/protobufjs"));
 __export(require("./dependencies/mongoose"));
-__export(require("./dependencies/hfxeventstash"));
 __export(require("./dependencies/hfxworker"));
 __export(require("./dependencies/hfxbus"));
 __export(require("./dependencies/backend-runtime"));

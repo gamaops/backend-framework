@@ -20,11 +20,14 @@ exports.getGrpcProtoDescriptor = (files) => {
     return grpc_1.default.loadPackageDefinition(packageDefinition);
 };
 class DataValidationError extends Error {
-    constructor(message, errno) {
+    constructor(message, errno, errid) {
         super(message);
         this.errno = 'INTERNAL_ERROR';
+        this.errid = null;
         if (errno)
             this.errno = errno;
+        if (errid)
+            this.errid = errid;
     }
 }
 exports.DataValidationError = DataValidationError;
@@ -59,17 +62,18 @@ exports.handleDataValidationError = (logger, error) => {
     return null;
 };
 exports.handleInternalError = (logger, error) => {
-    error.id = v4_1.default();
+    if (!error.errid)
+        error.errid = v4_1.default();
     let errno = 'INTERNAL_ERROR';
     if (Reflect.has(error, 'errno'))
         errno = error.errno;
     logger.error(error, 'Internal error');
     const metadata = new grpc_1.default.Metadata();
     metadata.set('errno', errno);
-    metadata.set('errid', error.id);
+    metadata.set('errid', error.errid);
     const statusError = {
         name: 'internal error',
-        message: error.id,
+        message: error.errid,
         metadata,
         code: grpc_1.default.status.INTERNAL,
     };

@@ -1,6 +1,5 @@
 export * from './dependencies/protobufjs';
 export * from './dependencies/mongoose';
-export * from './dependencies/hfxeventstash';
 export * from './dependencies/hfxworker';
 export * from './dependencies/hfxbus';
 export * from './dependencies/backend-runtime';

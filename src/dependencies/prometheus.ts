@@ -1,6 +1,7 @@
 import { register, collectDefaultMetrics, Gauge, DefaultMetricsCollectorConfiguration } from 'prom-client';
 import http from 'http';
 import * as loggerMod from '../logger';
+import uuidv4 from 'uuid/v4';
 import url from 'url';
 
 const logger = loggerMod.logger.child({server:'metrics'});
@@ -39,8 +40,10 @@ export const createMetricsServer = (options: IMetricsServerOptions): IMetricsSer
 	});
 	server.health.set(0);
 
-	server.on('error', (error) => {
-		logger.error(error, 'Metrics server error');
+	server.on('error', (error: any) => {
+		if (!error.errid)
+			error.errid = uuidv4();
+		logger.error({error}, 'Metrics server error');
 		process.exit(1);
 	});
 	
@@ -72,7 +75,7 @@ export const createMetricsServer = (options: IMetricsServerOptions): IMetricsSer
 				return;
 			}
 		}
-		logger.warn(request, 'Metrics server invalid request');
+		logger.warn({request}, 'Metrics server invalid request');
 		response.statusCode = 404;
 		response.setHeader('Content-Type', 'text/plain');
 		response.end('not found');

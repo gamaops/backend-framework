@@ -6,9 +6,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const loggerMod = __importStar(require("../logger"));
 const prom_client_1 = require("prom-client");
+const v4_1 = __importDefault(require("uuid/v4"));
 ;
 var functionsExecutionTime = null;
 exports.enableBackendRuntimeMetrics = () => {
@@ -40,6 +44,8 @@ exports.createBackendRuntime = (parameters) => {
                     return results;
                 }
                 catch (error) {
+                    if (!error.errid)
+                        error.errid = v4_1.default();
                     if (end)
                         end({ completionStatus: 'rejected' });
                     logger.error({ error, functionName: fnc.name }, 'Error on synchronous function');
@@ -58,6 +64,8 @@ exports.createBackendRuntime = (parameters) => {
                         end({ completionStatus: 'resolved' });
                     return results;
                 }).catch((error) => {
+                    if (!error.errid)
+                        error.errid = v4_1.default();
                     if (end)
                         end({ completionStatus: 'rejected' });
                     logger.error({ error, functionName: fnc.name }, 'Error on asynchronous function');

@@ -59,7 +59,6 @@
     "glob": "^7.1.4",
     "grpc": "^1.23.0",
     "hfxbus": "^2.0.1-rc.3",
-    "hfxeventstash": "^1.0.4",
     "hfxworker": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.9",

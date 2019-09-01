@@ -1,5 +1,7 @@
 import { Mongoose } from 'mongoose';
 import { logger } from '../logger';
+import uuidv4 from 'uuid/v4';
+const mongoLogger = logger.child({dependency: 'mongodb'});
 
 export const connectMongoose = async (mongodbUri: string, mongoose: Mongoose): Promise<Mongoose> => {
 
@@ -11,7 +13,9 @@ export const connectMongoose = async (mongodbUri: string, mongoose: Mongoose): P
 	});
 
 	mongoose.connection.on('error', (error) => {
-		logger.fatal(error);
+		if (!error.errid)
+			error.errid = uuidv4();
+		mongoLogger.fatal({error});
 		process.exit(1);
 	});
 

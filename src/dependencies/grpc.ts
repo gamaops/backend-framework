@@ -24,11 +24,14 @@ export const getGrpcProtoDescriptor = <T>(files: Array<string>): T => {
 export class DataValidationError<T = string> extends Error {
 
 	public errno: T | 'INTERNAL_ERROR' = 'INTERNAL_ERROR';
+	public errid: string | null = null;
 
-	constructor(message: string, errno?: T) {
+	constructor(message: string, errno?: T, errid?: string) {
 		super(message);
 		if (errno)
 			this.errno = errno;
+		if (errid)
+			this.errid = errid;
 	}
 
 }
@@ -66,17 +69,18 @@ export const handleDataValidationError = (logger: Logger, error: any): ServiceEr
 };
 
 export const handleInternalError = (logger: Logger, error: any): ServiceError => {
-	error.id = uuidv4();
+	if (!error.errid)
+		error.errid = uuidv4();
 	let errno: any = 'INTERNAL_ERROR';
 	if (Reflect.has(error, 'errno'))
 		errno = error.errno;
 	logger.error(error, 'Internal error');
 	const metadata = new grpc.Metadata();
 	metadata.set('errno', errno);
-	metadata.set('errid', error.id);
+	metadata.set('errid', error.errid);
 	const statusError: ServiceError = {
 		name: 'internal error',
-		message: error.id,
+		message: error.errid,
 		metadata,
 		code: grpc.status.INTERNAL,
 	};

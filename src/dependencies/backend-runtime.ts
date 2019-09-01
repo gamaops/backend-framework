@@ -2,6 +2,7 @@ import * as loggerMod from '../logger';
 import {
 	Histogram
 } from 'prom-client';
+import uuidv4 from 'uuid/v4';
 
 export interface IContextifyOptions {
 	logErrors?: 'sync' | 'async'
@@ -53,6 +54,8 @@ export const createBackendRuntime = <
 						end({ completionStatus: 'resolved' });
 					return results;
 				} catch (error) {
+					if (!error.errid)
+						error.errid = uuidv4();
 					if (end)
 						end({ completionStatus: 'rejected' });
 					logger.error({error, functionName: fnc.name}, 'Error on synchronous function');
@@ -71,6 +74,8 @@ export const createBackendRuntime = <
 						end({ completionStatus: 'resolved' });
 					return results;
 				}).catch((error: any) => {
+					if (!error.errid)
+						error.errid = uuidv4();
 					if (end)
 						end({ completionStatus: 'rejected' });
 					logger.error({error, functionName: fnc.name}, 'Error on asynchronous function');

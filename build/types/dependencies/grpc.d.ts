@@ -4,7 +4,8 @@ import grpc, { ServerUnaryCall } from 'grpc';
 export declare const getGrpcProtoDescriptor: <T>(files: string[]) => T;
 export declare class DataValidationError<T = string> extends Error {
     errno: T | 'INTERNAL_ERROR';
-    constructor(message: string, errno?: T);
+    errid: string | null;
+    constructor(message: string, errno?: T, errid?: string);
 }
 export declare const handleSchemaValidationError: (logger: Logger, schemaValidator: Ajv.Ajv, error: any) => grpc.ServiceError | null;
 export declare const handleDataValidationError: (logger: Logger, error: any) => grpc.ServiceError | null;

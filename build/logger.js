@@ -22,4 +22,9 @@ switch (process.env.LOG_LEVEL) {
 exports.logger = bunyan_1.default.createLogger({
     name: process.env.APP_NAME,
     level: LOG_LEVEL,
+    serializers: {
+        error: bunyan_1.default.stdSerializers.err,
+        request: bunyan_1.default.stdSerializers.request,
+        response: bunyan_1.default.stdSerializers.response,
+    }
 });
