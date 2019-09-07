@@ -5,4 +5,5 @@ export declare const buildConsumers: <T>(connection: ConnectionManager, options:
 }, consumers?: {
     [key: string]: Consumer;
 }) => T;
+export declare const buildRedisConnection: (urisString: string) => ConnectionManager;
 export declare const waitForJob: (logger: Logger, groups: string[], job: ISentJob) => Promise<Job>;
