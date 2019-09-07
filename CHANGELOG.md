@@ -1,3 +1,12 @@
+## 2019-09-07T14:36:12.261Z
+### 🆕 - add code or file(s) (project)
+
+#### none
+
+- Add function to build Redis connections
+
+-----------------------------
+
 ## 2019-09-01T10:10:21.455Z
 ### 🔥 - removing code or file(s) (project)
 
