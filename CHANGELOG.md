@@ -1,3 +1,12 @@
+## 2019-09-18T13:48:59.265Z
+### 🐛 - fixing a bug (project)
+
+#### none
+
+- Fix standard serializers names for bunyan
+
+-----------------------------
+
 ## 2019-09-07T14:36:12.261Z
 ### 🆕 - add code or file(s) (project)
 
