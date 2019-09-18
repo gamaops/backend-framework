@@ -24,7 +24,7 @@ exports.logger = bunyan_1.default.createLogger({
     level: LOG_LEVEL,
     serializers: {
         error: bunyan_1.default.stdSerializers.err,
-        request: bunyan_1.default.stdSerializers.request,
-        response: bunyan_1.default.stdSerializers.response,
+        request: bunyan_1.default.stdSerializers.req,
+        response: bunyan_1.default.stdSerializers.res,
     }
 });

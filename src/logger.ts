@@ -22,7 +22,7 @@ export const logger = Logger.createLogger({
 	level: LOG_LEVEL,
 	serializers: {
 		error: Logger.stdSerializers.err,
-		request: Logger.stdSerializers.request,
-		response: Logger.stdSerializers.response,
+		request: Logger.stdSerializers.req,
+		response: Logger.stdSerializers.res,
 	}
 });
