@@ -1,3 +1,11 @@
+## 2019-09-20T10:35:46.387Z
+### ⬆️ - upgrading dependencies (project)
+
+#### none
+
+
+-----------------------------
+
 ## 2019-09-18T13:48:59.265Z
 ### 🐛 - fixing a bug (project)
 
