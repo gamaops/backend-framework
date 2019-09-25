@@ -1,3 +1,12 @@
+## 2019-09-25T01:12:09.410Z
+### ⬆️ - upgrading dependencies (project)
+
+#### none
+
+- Upgrade HFXBus
+
+-----------------------------
+
 ## 2019-09-20T10:35:46.387Z
 ### ⬆️ - upgrading dependencies (project)
 
