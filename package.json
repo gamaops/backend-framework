@@ -54,7 +54,7 @@
     "@types/jsonwebtoken": "^8.3.3",
     "@types/mongoose": "^5.5.12",
     "@types/uuid": "^3.4.5",
-    "ajv": "^6.10.2",
+    "ajv": "^6.12.3",
     "bunyan": "^1.8.12",
     "glob": "^7.1.4",
     "grpc": "^1.23.0",
